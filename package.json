@@ -1,0 +1,51 @@
+{
+  "name": "dingle-javascript-nodejs",
+  "version": "0.0.1",
+  "description": "Javascript NodeJS Generator for Dingle",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vmlweb/Dingle-Javascript-NodeJS.git"
+  },
+  "keywords": [
+    "dingle",
+    "framework",
+    "module",
+    "api",
+    "layout",
+    "endpoint",
+    "backend",
+    "scalable",
+    "scale",
+    "maintain",
+    "maintainable",
+    "manager",
+    "export",
+    "code",
+    "generation",
+    "generator",
+    "client",
+    "validation",
+    "validator",
+    "validate",
+    "parameter",
+    "argument",
+    "option",
+    "javascript",
+    "nodejs"
+  ],
+  "author": "Vmlweb <admin@vmlweb.co.uk>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Vmlweb/Dingle-Javascript-NodeJS/issues"
+  },
+  "homepage": "https://github.com/Vmlweb/Dingle-Javascript-NodeJS#readme",
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "replaceall": "^0.1.6",
+    "validator": "^3.40.0"
+  }
+}
