@@ -55,26 +55,25 @@ exports.sendRequestHTTP = function(func, method, params, callback){
 		uri: url.resolve(hostname, func + '/?' + query.stringify(params)),
 	}, function (error, response, body) {
 		
-		//Check Download
-		if (response.headers.hasOwnProperty('content-disposition') && 
-			response.headers['content-disposition'].indexOf('attachment') != -1){
-		
-			//Respond  buffer
-			if(!error){
+		//Check Error
+		if(!error){
+			
+			//Check Download
+			if (response.headers.hasOwnProperty('content-disposition') && 
+				response.headers['content-disposition'].indexOf('attachment') != -1){
+			
+				//Respond  buffer
 				return callback(true, 'File downloading...', buffer);
-			} else {
-				return callback(false, error, {});
-			}
-				
-		}else{
-		
-			//Response
-			body = JSON.parse(body);
-			if(!error){
+					
+			}else{
+			
+				//Response
+				body = JSON.parse(body);
 				return callback(body.success, body.message, body.output);
-			} else {
-				return callback(false, error, body.output);
 			}
+			
+		} else {
+			return callback(false, error.toString(), {});
 		}
     });
     
@@ -102,26 +101,25 @@ exports.sendRequestPOST = function(func, params, callback){
 		formData: params
 	}, function (error, response, body) {
 		
-		//Check Download
-		if (response.headers.hasOwnProperty('content-disposition') && 
-			response.headers['content-disposition'].indexOf('attachment') != -1){
-		
-			//Respond  buffer
-			if(!error){
+		//Check Error
+		if(!error){
+			
+			//Check Download
+			if (response.headers.hasOwnProperty('content-disposition') && 
+				response.headers['content-disposition'].indexOf('attachment') != -1){
+			
+				//Respond  buffer
 				return callback(true, 'File downloading...', buffer);
-			} else {
-				return callback(false, error, {});
-			}
-				
-		}else{
-		
-			//Response
-			body = JSON.parse(body);
-			if(!error){
+					
+			}else{
+			
+				//Response
+				body = JSON.parse(body);
 				return callback(body.success, body.message, body.output);
-			} else {
-				return callback(false, error, body.output);
 			}
+			
+		} else {
+			return callback(false, error.toString(), {});
 		}
     });
     
