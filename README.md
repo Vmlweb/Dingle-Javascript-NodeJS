@@ -1,5 +1,5 @@
-# Dingle Swift Alamofire
-Swift Alamofire Generator for [Dingle](https://github.com/Vmlweb/Dingle)
+# Dingle Javascript NodeJS
+Javascript NodeJS Generator for [Dingle](https://github.com/Vmlweb/Dingle)
 
 ## Installation
 
@@ -35,7 +35,7 @@ Then simply drop the files generated into your node project and use like so:
 var myapi = require('./MYAPI.js');
 
 myapi.login('admin@myawesomeapi.com', 'mypassword', function(success, message, output){
-	console.log(success);
+	console.log(succes;
 	console.log(message);
 	console.log(output);
 });
@@ -43,9 +43,7 @@ myapi.login('admin@myawesomeapi.com', 'mypassword', function(success, message, o
  
 ## File Uploads
 
-To upload a file simply specify a read speed as a parameter like so:
-
-Then simply drop the files generated into your node project and use like so:
+To upload a file simply specify a read stream as a parameter like so:
 
 ```javascript
 var fs = require('fs');
@@ -60,7 +58,23 @@ myapi.upload_file('admin@myawesomeapi.com', fs.createReadStream("./myawesomefile
  
 ## File Downloads
 
-Coming Soon...
+When downloading a file the data is returned via the output variable as a buffer and can be written to file:
+
+```javascript
+var fs = require('fs');
+var myapi = require('./MYAPI.js');
+
+myapi.upload_file('admin@myawesomeapi.com', fs.createReadStream("./myawesomefile.png"), function(success, message, output){
+	console.log(success);
+	console.log(message);
+	console.log(output);
+	
+	//Check download and write to file
+	if (Buffer.isBuffer(output)){
+		fs.writeFile('./myawesomefile.png', output);
+	}
+}); 
+```
 
 ## Methods
 

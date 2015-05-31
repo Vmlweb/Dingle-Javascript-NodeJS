@@ -49,18 +49,38 @@ exports.sendRequestHTTP = function(func, method, params, callback){
 	}
 	
 	//Request
-	request({
+    var buffer = new Buffer("");
+	var req = request({
 		method: method,
 		uri: url.resolve(hostname, func + '/?' + query.stringify(params)),
 	}, function (error, response, body) {
 		
-		//Response
-		body = JSON.parse(body);
-		if(!error){
-			return callback(body.success, body.message, body.output);
-		} else {
-			return callback(false, error, body.output);
+		//Check Download
+		if (response.headers.hasOwnProperty('content-disposition') && 
+			response.headers['content-disposition'].indexOf('attachment') != -1){
+		
+			//Respond  buffer
+			if(!error){
+				return callback(true, 'File downloading...', buffer);
+			} else {
+				return callback(false, error, {});
+			}
+				
+		}else{
+		
+			//Response
+			body = JSON.parse(body);
+			if(!error){
+				return callback(body.success, body.message, body.output);
+			} else {
+				return callback(false, error, body.output);
+			}
 		}
+    });
+    
+    //Get Data
+    req.on('data', function(data) {
+    	buffer = Buffer.concat([buffer, data]);
     });
 }
 
@@ -75,19 +95,39 @@ exports.sendRequestPOST = function(func, params, callback){
 	}
 	
 	//Request
-	request({
+    var buffer = new Buffer("");
+	var req = request({
 		method: "POST",
 		uri: url.resolve(hostname,func),
 		formData: params
 	}, function (error, response, body) {
 		
-		//Response
-		body = JSON.parse(body);
-		if(!error){
-			return callback(body.success, body.message, body.output);
-		} else {
-			return callback(false, error, body.output);
+		//Check Download
+		if (response.headers.hasOwnProperty('content-disposition') && 
+			response.headers['content-disposition'].indexOf('attachment') != -1){
+		
+			//Respond  buffer
+			if(!error){
+				return callback(true, 'File downloading...', buffer);
+			} else {
+				return callback(false, error, {});
+			}
+				
+		}else{
+		
+			//Response
+			body = JSON.parse(body);
+			if(!error){
+				return callback(body.success, body.message, body.output);
+			} else {
+				return callback(false, error, body.output);
+			}
 		}
+    });
+    
+    //Get Data
+    req.on('data', function(data) {
+    	buffer = Buffer.concat([buffer, data]);
     });
 }
 
