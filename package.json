@@ -1,6 +1,6 @@
 {
   "name": "dingle-javascript-nodejs",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Javascript NodeJS Generator for Dingle",
   "main": "index.js",
   "scripts": {

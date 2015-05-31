@@ -41,6 +41,8 @@ myapi.login('admin@myawesomeapi.com', 'mypassword', function(success, message, o
 });
 ```
 
+## Hostnames
+
 When the code is generated your hostnames are automatically taken from the dingle config but you can change it like so:
 
 ```javascript
