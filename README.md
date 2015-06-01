@@ -1,5 +1,5 @@
 # Dingle NodeJS
-NodeJS Generator for [Dingle](https://github.com/Vmlweb/Dingle)
+[Dingle](https://github.com/Vmlweb/Dingle) Generator for NodeJS
 
 ## Installation
 
