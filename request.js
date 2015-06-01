@@ -57,7 +57,7 @@ exports.dingleHTTP = function(func, method, params, callback, uploading, downloa
 			var size = req.req.connection._httpMessage._headers['content-length'];
 			var remaining = size - req.req.connection._bytesDispatched;
 			var percentage = Math.round(100 - ((100/size) * remaining));
-			uploading(size, remaining, percentage);
+			uploading(size, Math.max(0, remaining), percentage);
 		}
     }, 250);
     
@@ -69,7 +69,7 @@ exports.dingleHTTP = function(func, method, params, callback, uploading, downloa
 			var size = req.responseContent.headers['content-length'];
 			var remaining = size - req.responseContent.client.bytesRead;
 			var percentage = Math.round(100 - ((100/size) * remaining));
-			downloading(size, remaining, percentage);
+			downloading(size, Math.max(0, remaining), percentage);
 		}
     }, 250);
     
@@ -79,14 +79,23 @@ exports.dingleHTTP = function(func, method, params, callback, uploading, downloa
 		uri: url.resolve(hostname, func + '/?' + query.stringify(params)),
 	}, function (error, response, body) {
 		
+		//Clear progress
 		clearInterval(upload_progress);
 		clearInterval(download_progress);
 		
-		//Check if stream
-		if (!response.headers.hasOwnProperty('content-disposition')){
-	
-			//Check Error
-			if(!error){
+		//Check Error
+		if(error){
+			if (error.code == 'ENOTFOUND'){
+				return callback(false, 'Could not find server, please check your internet connection', {});
+			}else if (error.code == 'ECONNREFUSED'){
+				return callback(false, 'Could not connect to server, please contact administrator', {});
+			}else{
+				return callback(false, error.toString(), {});
+			}
+		}else{
+		
+			//Check if stream
+			if (!response.headers.hasOwnProperty('content-disposition')){
 
 				//Response
 				try{
@@ -95,10 +104,8 @@ exports.dingleHTTP = function(func, method, params, callback, uploading, downloa
 				}catch (error){
 					return callback(false, 'Invalid JSON response', {});
 				}
-
-			} else {
-				return callback(false, error.toString(), {});
 			}
+			
 		}
 	});
 	
@@ -150,7 +157,7 @@ exports.dinglePOST = function(func, params, callback, uploading, downloading, st
 			var size = req.req.connection._httpMessage._headers['content-length'];
 			var remaining = size - req.req.connection._bytesDispatched;
 			var percentage = Math.round(100 - ((100/size) * remaining));
-			uploading(size, remaining, percentage);
+			uploading(size, Math.max(0, remaining), percentage);
 		}
     }, 250);
     
@@ -162,7 +169,7 @@ exports.dinglePOST = function(func, params, callback, uploading, downloading, st
 			var size = req.responseContent.headers['content-length'];
 			var remaining = size - req.responseContent.client.bytesRead;
 			var percentage = Math.round(100 - ((100/size) * remaining));
-			downloading(size, remaining, percentage);
+			downloading(size, Math.max(0, remaining), percentage);
 		}
     }, 250);
     
@@ -173,14 +180,23 @@ exports.dinglePOST = function(func, params, callback, uploading, downloading, st
 		formData: params
 	}, function (error, response, body) {
 		
+		//Clear progress
 		clearInterval(upload_progress);
 		clearInterval(download_progress);
 		
-		//Check if stream
-		if (!response.headers.hasOwnProperty('content-disposition')){
-	
-			//Check Error
-			if(!error){
+		//Check Error
+		if(error){
+			if (error.code == 'ENOTFOUND'){
+				return callback(false, 'Could not find server, please check your internet connection', {});
+			}else if (error.code == 'ECONNREFUSED'){
+				return callback(false, 'Could not connect to server, please contact administrator', {});
+			}else{
+				return callback(false, error.toString(), {});
+			}
+		}else{
+		
+			//Check if stream
+			if (!response.headers.hasOwnProperty('content-disposition')){
 
 				//Response
 				try{
@@ -189,10 +205,8 @@ exports.dinglePOST = function(func, params, callback, uploading, downloading, st
 				}catch (error){
 					return callback(false, 'Invalid JSON response', {});
 				}
-
-			} else {
-				return callback(false, error.toString(), {});
 			}
+			
 		}
 	});
 	
