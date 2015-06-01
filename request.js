@@ -7,7 +7,6 @@ var dgram = require("dgram");
 var url = require('url');
 
 //Hostnames
-exports.hostnames = {};
 //exports.method = 'URL';
 <hostnames>
 
@@ -42,10 +41,12 @@ exports.sendRequest = function(func, methods, params, callback, uploading, downl
 exports.dingleHTTP = function(func, method, params, callback, uploading, downloading, stream){
 	
 	//Method
-	if (!exports.http && !exports.https){
-		return callback(false, 'Could not find HTTP or HTTPS hostname', {});
+	if (exports.https){
+		var hostname = 'https://' + exports.https + '/';
+	}else if (exports.http){
+		var hostname = 'http://' + exports.http + '/';
 	}else{
-		var hostname = exports.https || exports.http;
+		return callback(false, 'Could not find HTTP or HTTPS hostname', {});
 	}
 	
 	//Upload progress
@@ -133,10 +134,12 @@ exports.dingleHTTP = function(func, method, params, callback, uploading, downloa
 exports.dinglePOST = function(func, params, callback, uploading, downloading, stream){
 	
 	//Method
-	if (!exports.http && !exports.https){
-		return callback(false, 'Could not find HTTP or HTTPS hostname', {});
+	if (exports.https){
+		var hostname = 'https://' + exports.https + '/';
+	}else if (exports.http){
+		var hostname = 'http://' + exports.http + '/';
 	}else{
-		var hostname = exports.https || exports.http;
+		return callback(false, 'Could not find HTTP or HTTPS hostname', {});
 	}
 	
 	//Upload progress
@@ -225,10 +228,10 @@ exports.dinglePOST = function(func, params, callback, uploading, downloading, st
 exports.dingleTCP = function(func, params, callback){
 	
 	//Method
-	if (!exports.tcp){
-		return callback(false, 'Could not find TCP hostname', {});
+	if (exports.tcp){
+		var hostname = 'tcp://' + exports.tcp + '/';
 	}else{
-		var hostname = url.parse(exports.tcp);
+		return callback(false, 'Could not find TCP hostname', {});
 	}
 	
 	//Request
@@ -249,10 +252,10 @@ exports.dingleTCP = function(func, params, callback){
 exports.dingleUDP = function(func, params, callback){
 	
 	//Method
-	if (!exports.udp){
-		return callback(false, 'Could not find UDP hostname', {});
+	if (exports.udp){
+		var hostname = 'udp://' + exports.udp + '/';
 	}else{
-		var hostname = url.parse(exports.udp);
+		return callback(false, 'Could not find UDP hostname', {});
 	}
 	
 	//Request
@@ -271,14 +274,20 @@ exports.dingleUDP = function(func, params, callback){
 
 //Request Functions
 /*
-exports.name = function(name, callback){
+exports.name = function(name, callback, uploading, stream, downloading){
 	
 	//Parameters
 	var params = {};
-	if (name != null){ params[name] = name.toString(); }
+	if (email != null){ 
+		if (typeof file == "object"){
+			params["email"] = email;
+		}else{
+			params["email"] = email.toString();
+		}
+	}
 	
 	//Execute
-	exports.sendRequest('name', [ "METHOD" ], params, callback);
+	exports.sendRequest('name', [ "METHOD" ], params, callback, uploading, stream, downloading);
 }
 */
 <functions>

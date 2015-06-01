@@ -69,13 +69,13 @@ function generate(func){
 	str += '	//Parameters\n';
 	str += '	var params = {};\n';
 	for (param in func.params){
-		str += '		if (' + param + ' != null){ \n';
-		str += '			if (typeof file == "object"){\n';
-		str += '				params["' + param + '"] = ' + param + ';\n';
-		str += '			}else{\n';
-		str += '				params["' + param + '"] = ' + param + '.toString();\n';
-		str += '			}\n';
+		str += '	if (' + param + ' != null){ \n';
+		str += '		if (typeof file == "object"){\n';
+		str += '			params["' + param + '"] = ' + param + ';\n';
+		str += '		}else{\n';
+		str += '			params["' + param + '"] = ' + param + '.toString();\n';
 		str += '		}\n';
+		str += '	}\n';
 	}
 	str += '	\n';
 	str += '	//Execute\n';
