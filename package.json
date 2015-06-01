@@ -1,14 +1,14 @@
 {
   "name": "dingle-nodejs",
-  "version": "0.1.3",
-  "description": "NodeJS Generator for Dingle",
+  "version": "0.2.0",
+  "description": "Dingle Generator for NodeJS",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Vmlweb/Dingle-Javascript-NodeJS.git"
+    "url": "git+https://github.com/Vmlweb/Dingle-NodeJS.git"
   },
   "keywords": [
     "dingle",
@@ -40,9 +40,9 @@
   "author": "Vmlweb <admin@vmlweb.co.uk>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Vmlweb/Dingle-Javascript-NodeJS/issues"
+    "url": "https://github.com/Vmlweb/Dingle-NodeJS/issues"
   },
-  "homepage": "https://github.com/Vmlweb/Dingle-Javascript-NodeJS#readme",
+  "homepage": "https://github.com/Vmlweb/Dingle-NodeJS#readme",
   "dependencies": {
     "mkdirp": "^0.5.1",
     "replaceall": "^0.1.6",
