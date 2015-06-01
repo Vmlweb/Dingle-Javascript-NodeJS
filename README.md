@@ -1,17 +1,21 @@
-# Dingle Javascript NodeJS
-Javascript NodeJS Generator for [Dingle](https://github.com/Vmlweb/Dingle)
+# Dingle NodeJS
+NodeJS Generator for [Dingle](https://github.com/Vmlweb/Dingle)
 
 ## Installation
 
 ```bash
-$ npm install --save dingle-javascript-nodejs
+$ npm install --save dingle-nodejs
 ```
 
 ## Dependancies
 
-You will need the following modules in your project:
+You will need the following module in your project:
 
   * [Request](https://github.com/request/request)
+  
+```javascript
+npm install --save request
+```
 
 ## Usage
 
@@ -25,7 +29,7 @@ var dingle = require('dingle')({
     udp_listen: '0.0.0.0'
 });
 
-var generator = require('dingle-javascript-nodejs');
+var generator = require('dingle-nodejs');
 generator.generate(dingle, './exports/nodejs');
 ```
 
@@ -48,10 +52,10 @@ When the code is generated your hostnames are automatically taken from the dingl
 ```javascript
 var myapi = require('./MYAPI.js');
 
-myapi.hostnames["HTTP"] = "http://localhost:7691";
-myapi.hostnames["HTTPS"] = "https://localhost:7691";
-myapi.hostnames["TCP"] = "tcp://localhost:7693";
-myapi.hostnames["UDP"] = "udp://localhost:7694";
+myapi.http = "localhost:7691";
+myapi.https = "localhost:7691";
+myapi.tcp = "localhost:7693";
+myapi.udp = "localhost:7694";
 
 myapi.login('admin@myawesomeapi.com', 'mypassword', function(success, message, output){
 	console.log(succes;
@@ -62,7 +66,7 @@ myapi.login('admin@myawesomeapi.com', 'mypassword', function(success, message, o
  
 ## File Uploads
 
-To upload a file simply specify a read stream as a parameter like so:
+To upload a file simply specify a read stream as a parameter as shown below:
 
 ```javascript
 var fs = require('fs');
@@ -72,24 +76,28 @@ myapi.upload_file('admin@myawesomeapi.com', fs.createReadStream("./myawesomefile
 	console.log(success);
 	console.log(message);
 	console.log(output);
+}, function (size, remaining, progress){
+	console.log('Upload at ' + progress + '%');
 }); 
 ```
  
 ## File Downloads
 
-When downloading a file the data is returned via the output variable as a buffer and can be written to file:
+When downloading a file you must specify a stream to write to and once the download is complete the stream will be returned in the output variable callback:
 
 ```javascript
 var fs = require('fs');
 var myapi = require('./MYAPI.js');
 
-myapi.upload_file('admin@myawesomeapi.com', fs.createReadStream("./myawesomefile.png"), function(success, message, output){
-	
-	//Check download and write to file
-	if (Buffer.isBuffer(output)){
-		fs.writeFile('./myawesomefile.png', output);
-	}
-}); 
+myapi.download_file('admin@myawesomeapi.com', 'mypassword', function(success, message, output){
+	console.log(success);
+	console.log(message);
+	console.log(output);
+}, function (size, remaining, progress){
+	console.log('Upload at ' + progress + '%');
+}, function (size, remaining, progress){
+	console.log('Download at ' + progress + '%');
+}, fs.createWriteStream('./myawesomefile.mov'));
 ```
 
 ## Methods

@@ -11,16 +11,16 @@ exports.generate = function(dingle, directory){
 	//Hostname
 	var hostnames = '';
 	if (dingle.config.https.listen != '' && dingle.config.https.hostname != ''){
-		hostnames += 'exports.hostnames["HTTPS"] = "https://' + dingle.config.https.hostname + ':' + dingle.config.https.port + '";\n';
+		hostnames += 'exports.https = "' + dingle.config.https.hostname + ':' + dingle.config.https.port + '";\n';
 	}
 	if (dingle.config.http.listen != '' && dingle.config.http.hostname != '' ){
-		hostnames += 'exports.hostnames["HTTP"] = "http://' + dingle.config.http.hostname + ':' + dingle.config.http.port + '";\n';
+		hostnames += 'exports.http = "' + dingle.config.http.hostname + ':' + dingle.config.http.port + '";\n';
 	}
 	if (dingle.config.tcp.listen != '' && dingle.config.tcp.hostname != '' ){
-		hostnames += 'exports.hostnames["TCP"] = "tcp://' + dingle.config.tcp.hostname + ':' + dingle.config.tcp.port + '";\n';
+		hostnames += 'exports.tcp = "' + dingle.config.tcp.hostname + ':' + dingle.config.tcp.port + '";\n';
 	}
 	if (dingle.config.udp.listen != '' && dingle.config.udp.hostname != '' ){
-		hostnames += 'exports.hostnames["UDP"] = "udp://' + dingle.config.udp.hostname + ':' + dingle.config.udp.port + '";\n';
+		hostnames += 'exports.udp = "' + dingle.config.udp.hostname + ':' + dingle.config.udp.port + '";\n';
 	}
 	
 	//Generate
@@ -64,7 +64,7 @@ function generate(func){
 	
 	//Generate
 	var str = '//Request\n';
-	str += 'exports.' + func.name + ' = function(' + param_keys.join(', ') + ', callback){\n';
+	str += 'exports.' + func.name + ' = function(' + param_keys.join(', ') + ', callback, uploading, stream, downloading){\n';
 	str += '\n';
 	str += '	//Parameters\n';
 	str += '	var params = {};\n';
@@ -79,7 +79,7 @@ function generate(func){
 	}
 	str += '	\n';
 	str += '	//Execute\n';
-	str += '	exports.sendRequest("' + func.name + '", [ "' + method_values.join('", "') + '" ], params, callback);\n';
+	str += '	exports.sendRequest("' + func.name + '", [ "' + method_values.join('", "') + '" ], params, callback, uploading, stream, downloading);\n';
 	str += '}\n';
 	return str;
 }

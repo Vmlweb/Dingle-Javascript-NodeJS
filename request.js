@@ -8,29 +8,29 @@ var url = require('url');
 
 //Hostnames
 exports.hostnames = {};
-//exports.hostnames['METHOD'] = 'URL';
+//exports.method = 'URL';
 <hostnames>
 
 //Route Request
-exports.sendRequest = function(func, methods, params, callback){
+exports.sendRequest = function(func, methods, params, callback, uploading, downloading, stream){
 	
 	//Methods
 	for (method in methods){
 		method = methods[method];
 		
 		//Route
-		if (method == "UDP" && exports.hostnames.hasOwnProperty('UDP')){
-			return exports.sendRequestUDP(func, params, callback);
+		if (method == "UDP" && exports.udp){
+			return exports.dingleUDP(func, params, callback);
 		
-		}else if (method == "TCP" && exports.hostnames.hasOwnProperty('UDP')){
-			return exports.sendRequestTCP(func, params, callback);
+		}else if (method == "TCP" && exports.tcp){
+			return exports.dingleTCP(func, params, callback);
 		
-		}else if (method == "POST" && (exports.hostnames.hasOwnProperty('HTTP') || exports.hostnames.hasOwnProperty('HTTPS'))){
-			return exports.sendRequestPOST(func, params, callback);
+		}else if (method == "POST" && (exports.https || exports.http)){
+			return exports.dinglePOST(func, params, callback, uploading, downloading, stream);
 		
 		}else if ([ "OPTIONS", "GET", "HEAD", "PUT", "PATCH", "DELETE", "TRACE", "CONNECT" ].indexOf(method) != -1
-		 	&& (exports.hostnames.hasOwnProperty('HTTP') || exports.hostnames.hasOwnProperty('HTTPS'))){
-			return exports.sendRequestHTTP(func, method, params, callback);
+		 	&& (exports.https || exports.http)){
+			return exports.dingleHTTP(func, method, params, callback, uploading, downloading, stream);
 		
 		}else{
 			return callback(false, 'Could not find method to call', {});
@@ -39,104 +39,196 @@ exports.sendRequest = function(func, methods, params, callback){
 }
 
 //HTTP Request
-exports.sendRequestHTTP = function(func, method, params, callback){
+exports.dingleHTTP = function(func, method, params, callback, uploading, downloading, stream){
 	
 	//Method
-	if (!exports.hostnames.hasOwnProperty('HTTP') && !exports.hostnames.hasOwnProperty('HTTPS')){
+	if (!exports.http && !exports.https){
 		return callback(false, 'Could not find HTTP or HTTPS hostname', {});
 	}else{
-		var hostname = exports.hostnames['HTTPS'] || exports.hostnames['HTTP'];
+		var hostname = exports.https || exports.http;
 	}
 	
-	//Request
-    var buffer = new Buffer("");
+	//Upload progress
+    var upload_progress = setInterval(function(){
+	   	if (uploading && !req.hasOwnProperty('responseContent')){
+	   	
+	   		//Callback
+			var size = req.req.connection._httpMessage._headers['content-length'];
+			var remaining = size - req.req.connection._bytesDispatched;
+			var percentage = Math.round(100 - ((100/size) * remaining));
+			uploading(size, remaining, percentage);
+		}
+    }, 250);
+    
+    //Download progress
+    var download_progress = setInterval(function(){
+    	if (downloading && req.hasOwnProperty('responseContent')){
+    	
+	   		//Callback
+			var size = req.responseContent.headers['content-length'];
+			var remaining = size - req.responseContent.client.bytesRead;
+			var percentage = Math.round(100 - ((100/size) * remaining));
+			downloading(size, remaining, percentage);
+		}
+    }, 250);
+    
+    //Request
 	var req = request({
 		method: method,
 		uri: url.resolve(hostname, func + '/?' + query.stringify(params)),
 	}, function (error, response, body) {
 		
-		//Check Error
-		if(!error){
-			
-			//Check Download
-			if (response.headers.hasOwnProperty('content-disposition') && 
-				response.headers['content-disposition'].indexOf('attachment') != -1){
-			
-				//Respond  buffer
-				return callback(true, 'File downloading...', buffer);
-					
-			}else{
-			
+		clearInterval(upload_progress);
+		clearInterval(download_progress);
+		
+		//Check if stream
+		if (!response.headers.hasOwnProperty('content-disposition')){
+	
+			//Check Error
+			if(!error){
+
 				//Response
-				body = JSON.parse(body);
-				return callback(body.success, body.message, body.output);
+				try{
+					body = JSON.parse(body);
+					return callback(body.success, body.message, body.output);
+				}catch (error){
+					return callback(false, 'Invalid JSON response', {});
+				}
+
+			} else {
+				return callback(false, error.toString(), {});
 			}
-			
-		} else {
-			return callback(false, error.toString(), {});
 		}
-    });
-    
-    //Get Data
-    req.on('data', function(data) {
-    	buffer = Buffer.concat([buffer, data]);
-    });
+	});
+	
+	//Response
+	req.on('response',function (response){
+		
+		//Stream
+		if (stream && response.headers.hasOwnProperty('content-disposition')){
+			
+			//Pipe
+			req.callback = null;
+			req.pipe(stream);
+			
+			//Stream complete
+			stream.on('finish', function() {
+
+				clearInterval(upload_progress);
+				clearInterval(download_progress);
+
+				//End stream
+				return callback(true, 'Response written to stream', stream);
+			});
+		}else if (!stream && response.headers.hasOwnProperty('content-disposition')){
+			
+			//No stream
+			req.callback = null;
+			return callback(false, 'Stream required to download this file.', {})
+		}
+	});
 }
 
 //HTTP POST Request
-exports.sendRequestPOST = function(func, params, callback){
+exports.dinglePOST = function(func, params, callback, uploading, downloading, stream){
 	
 	//Method
-	if (!exports.hostnames.hasOwnProperty('HTTP') && !exports.hostnames.hasOwnProperty('HTTPS')){
+	if (!exports.http && !exports.https){
 		return callback(false, 'Could not find HTTP or HTTPS hostname', {});
 	}else{
-		var hostname = exports.hostnames['HTTPS'] || exports.hostnames['HTTP'];
+		var hostname = exports.https || exports.http;
 	}
 	
-	//Request
-    var buffer = new Buffer("");
+	//Upload progress
+    var upload_progress = setInterval(function(){
+	   	if (uploading && !req.hasOwnProperty('responseContent')){
+	   	
+	   		//Callback
+			var size = req.req.connection._httpMessage._headers['content-length'];
+			var remaining = size - req.req.connection._bytesDispatched;
+			var percentage = Math.round(100 - ((100/size) * remaining));
+			uploading(size, remaining, percentage);
+		}
+    }, 250);
+    
+    //Download progress
+    var download_progress = setInterval(function(){
+    	if (downloading && req.hasOwnProperty('responseContent')){
+    	
+	   		//Callback
+			var size = req.responseContent.headers['content-length'];
+			var remaining = size - req.responseContent.client.bytesRead;
+			var percentage = Math.round(100 - ((100/size) * remaining));
+			downloading(size, remaining, percentage);
+		}
+    }, 250);
+    
+    //Request
 	var req = request({
 		method: "POST",
 		uri: url.resolve(hostname,func),
 		formData: params
 	}, function (error, response, body) {
 		
-		//Check Error
-		if(!error){
-			
-			//Check Download
-			if (response.headers.hasOwnProperty('content-disposition') && 
-				response.headers['content-disposition'].indexOf('attachment') != -1){
-			
-				//Respond  buffer
-				return callback(true, 'File downloading...', buffer);
-					
-			}else{
-			
+		clearInterval(upload_progress);
+		clearInterval(download_progress);
+		
+		//Check if stream
+		if (!response.headers.hasOwnProperty('content-disposition')){
+	
+			//Check Error
+			if(!error){
+
 				//Response
-				body = JSON.parse(body);
-				return callback(body.success, body.message, body.output);
+				try{
+					body = JSON.parse(body);
+					return callback(body.success, body.message, body.output);
+				}catch (error){
+					return callback(false, 'Invalid JSON response', {});
+				}
+
+			} else {
+				return callback(false, error.toString(), {});
 			}
-			
-		} else {
-			return callback(false, error.toString(), {});
 		}
-    });
-    
-    //Get Data
-    req.on('data', function(data) {
-    	buffer = Buffer.concat([buffer, data]);
-    });
+	});
+	
+	//Response
+	req.on('response',function (response){
+		
+		//Stream
+		if (stream && response.headers.hasOwnProperty('content-disposition')){
+			
+			//Pipe
+			req.callback = null;
+			req.pipe(stream);
+			
+			//Stream complete
+			stream.on('finish', function() {
+
+				clearInterval(upload_progress);
+				clearInterval(download_progress);
+
+				//End stream
+				return callback(true, 'Response written to stream', stream);
+			});
+		}else if (!stream && response.headers.hasOwnProperty('content-disposition')){
+			
+			//No stream
+			req.callback = null;
+			return callback(false, 'Stream required to download this file.', {})
+		}
+	});
 }
 
 //TCP Request
-exports.sendRequestTCP = function(func, params, callback){
+exports.dingleTCP = function(func, params, callback){
 	
 	//Method
-	if (!exports.hostnames.hasOwnProperty('TCP')){
+	if (!exports.tcp){
 		return callback(false, 'Could not find TCP hostname', {});
 	}else{
-		var hostname = url.parse(exports.hostnames['TCP']);
+		var hostname = url.parse(exports.tcp);
 	}
 	
 	//Request
@@ -154,13 +246,13 @@ exports.sendRequestTCP = function(func, params, callback){
 }
 
 //UDP Request
-exports.sendRequestUDP = function(func, params, callback){
+exports.dingleUDP = function(func, params, callback){
 	
 	//Method
-	if (!exports.hostnames.hasOwnProperty('UDP')){
+	if (!exports.udp){
 		return callback(false, 'Could not find UDP hostname', {});
 	}else{
-		var hostname = url.parse(exports.hostnames['UDP']);
+		var hostname = url.parse(exports.udp);
 	}
 	
 	//Request
