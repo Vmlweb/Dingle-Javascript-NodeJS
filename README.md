@@ -39,7 +39,7 @@ Then simply drop the files generated into your node project and use like so:
 var myapi = require('./MYAPI.js');
 
 myapi.login('admin@myawesomeapi.com', 'mypassword', function(success, message, output){
-	console.log(succes;
+	console.log(success);
 	console.log(message);
 	console.log(output);
 });
@@ -58,7 +58,7 @@ myapi.tcp = "localhost:7693";
 myapi.udp = "localhost:7694";
 
 myapi.login('admin@myawesomeapi.com', 'mypassword', function(success, message, output){
-	console.log(succes;
+	console.log(success);
 	console.log(message);
 	console.log(output);
 });
