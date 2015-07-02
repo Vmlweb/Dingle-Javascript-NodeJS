@@ -7,7 +7,7 @@ var dgram = require("dgram");
 var url = require('url');
 
 //Hostnames
-//exports.method = 'URL';
+//exports._METHOD_ = '_URL_';
 <hostnames>
 
 //Route Request
@@ -243,7 +243,7 @@ exports.dingleTCP = function(func, params, callback){
 	
 	//Method
 	if (exports.tcp){
-		var hostname = 'tcp://' + exports.tcp + '/';
+		var hostname = url.parse('tcp://' + exports.tcp + '/');
 	}else{
 		return callback(false, 'Could not find TCP hostname', {});
 	}
@@ -267,7 +267,7 @@ exports.dingleUDP = function(func, params, callback){
 	
 	//Method
 	if (exports.udp){
-		var hostname = 'udp://' + exports.udp + '/';
+		var hostname = url.parse('udp://' + exports.udp + '/');
 	}else{
 		return callback(false, 'Could not find UDP hostname', {});
 	}
@@ -288,20 +288,25 @@ exports.dingleUDP = function(func, params, callback){
 
 //Request Functions
 /*
-exports.name = function(name, callback, uploading, stream, downloading){
+exports._NAME_ = function(_PARAMS_, callback, methods, uploading, stream, downloading){
 	
 	//Parameters
 	var params = {};
-	if (email != null){ 
+	if (_PARAM_ != null){ 
 		if (typeof file == "object"){
-			params["email"] = email;
+			params["_PARAM_"] = _PARAM_;
 		}else{
-			params["email"] = email.toString();
+			params["_PARAM_"] = _PARAM_.toString();
 		}
 	}
 	
+	//Methods
+	if (methods == null){
+		methods = _METHODS_
+	}
+	
 	//Execute
-	exports.sendRequest('name', [ "METHOD" ], params, callback, uploading, stream, downloading);
+	exports.sendRequest('_NAME_', [ "_METHODS_" ], params, callback, uploading, stream, downloading);
 }
 */
 <functions>

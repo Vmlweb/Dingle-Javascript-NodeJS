@@ -53,7 +53,7 @@ When the code is generated your hostnames are automatically taken from the dingl
 var myapi = require('./MYAPI.js');
 
 myapi.http = "localhost:7691";
-myapi.https = "localhost:7691";
+myapi.https = "localhost:7692";
 myapi.tcp = "localhost:7693";
 myapi.udp = "localhost:7694";
 
@@ -76,7 +76,7 @@ myapi.upload_file('admin@myawesomeapi.com', fs.createReadStream("./myawesomefile
 	console.log(success);
 	console.log(message);
 	console.log(output);
-}, function (size, remaining, progress){
+}, [ "HTTPS", "HTTP" ], function (size, remaining, progress){
 	console.log('Upload at ' + progress + '%');
 }); 
 ```
@@ -93,11 +93,25 @@ myapi.download_file('admin@myawesomeapi.com', 'mypassword', function(success, me
 	console.log(success);
 	console.log(message);
 	console.log(output);
-}, function (size, remaining, progress){
+}, null, function (size, remaining, progress){
 	console.log('Upload at ' + progress + '%');
 }, function (size, remaining, progress){
 	console.log('Download at ' + progress + '%');
 }, fs.createWriteStream('./myawesomefile.mov'));
+```
+
+## Choosing Method
+
+By default dingle will auto choose each method depending on the order of which they are specified in the function but we can override this like so:
+
+```javascript
+var myapi = require('./MYAPI.js');
+
+myapi.login('admin@myawesomeapi.com', 'mypassword', function(success, message, output){
+	console.log(success);
+	console.log(message);
+	console.log(output);
+}, [ "HTTPS", "HTTP" ]);
 ```
 
 ## Methods

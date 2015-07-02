@@ -64,7 +64,7 @@ function generate(func){
 	
 	//Generate
 	var str = '//Request\n';
-	str += 'exports.' + func.name + ' = function(' + param_keys.join(', ') + ', callback, uploading, stream, downloading){\n';
+	str += 'exports.' + func.name + ' = function(' + param_keys.join(', ') + ', callback, methods, uploading, stream, downloading){\n';
 	str += '\n';
 	str += '	//Parameters\n';
 	str += '	var params = {};\n';
@@ -78,8 +78,13 @@ function generate(func){
 		str += '	}\n';
 	}
 	str += '	\n';
+	str += '	//Methods\n';
+	str += '	if (methods == null){\n';
+	str += '		methods = [ "' + method_values.join('", "') + '" ]\n';
+	str += '	}\n';
+	str += '	\n';
 	str += '	//Execute\n';
-	str += '	exports.sendRequest("' + func.name + '", [ "' + method_values.join('", "') + '" ], params, callback, uploading, stream, downloading);\n';
+	str += '	exports.sendRequest("' + func.name + '", methods, params, callback, uploading, stream, downloading);\n';
 	str += '}\n';
 	return str;
 }
