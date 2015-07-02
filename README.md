@@ -76,7 +76,7 @@ myapi.upload_file('admin@myawesomeapi.com', fs.createReadStream("./myawesomefile
 	console.log(success);
 	console.log(message);
 	console.log(output);
-}, [ "HTTPS", "HTTP" ], function (size, remaining, progress){
+}, [ "POST", "GET" ], function (size, remaining, progress){
 	console.log('Upload at ' + progress + '%');
 }); 
 ```
@@ -111,7 +111,7 @@ myapi.login('admin@myawesomeapi.com', 'mypassword', function(success, message, o
 	console.log(success);
 	console.log(message);
 	console.log(output);
-}, [ "HTTPS", "HTTP" ]);
+}, [ "POST", "GET" ]);
 ```
 
 ## Methods
