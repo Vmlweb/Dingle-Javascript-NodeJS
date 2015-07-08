@@ -62,9 +62,16 @@ function generate(func){
 	var method_values = [];
 	for(var key in func.methods) { method_values.push(func.methods[key]); }
 	
+	//Join
+	if (param_keys.length != 0){
+		param_keys = param_keys.join(', ') + ',';
+	}else{
+		param_keys = '';
+	}
+	
 	//Generate
 	var str = '//Request\n';
-	str += 'exports.' + func.name + ' = function(' + param_keys.join(', ') + ', callback, methods, uploading, stream, downloading){\n';
+	str += 'exports.' + func.name + ' = function(' + param_keys + ' callback, methods, uploading, stream, downloading){\n';
 	str += '\n';
 	str += '	//Parameters\n';
 	str += '	var params = {};\n';
