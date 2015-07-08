@@ -182,7 +182,7 @@ exports.dinglePOST = function(func, params, callback, uploading, downloading, st
 		uri: url.resolve(hostname,func),
 		rejectUnauthorized: false,
 		requestCert: true,
-		agentOptions: false
+		agentOptions: false,
 		formData: params
 	}, function (error, response, body) {
 		
