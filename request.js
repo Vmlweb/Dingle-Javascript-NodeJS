@@ -77,6 +77,9 @@ exports.dingleHTTP = function(func, method, params, callback, uploading, downloa
 	var req = request({
 		method: method,
 		uri: url.resolve(hostname, func + '/?' + query.stringify(params)),
+		rejectUnauthorized: false,
+		  requestCert: true,
+		  agentOptions: false
 	}, function (error, response, body) {
 		
 		//Clear progress
@@ -177,6 +180,9 @@ exports.dinglePOST = function(func, params, callback, uploading, downloading, st
 	var req = request({
 		method: "POST",
 		uri: url.resolve(hostname,func),
+		rejectUnauthorized: false,
+		requestCert: true,
+		agentOptions: false
 		formData: params
 	}, function (error, response, body) {
 		
